@@ -449,7 +449,10 @@ class Client(object):
         """
         attrs = self._fixup_add_list(attrs)
         conn = self._ldap_connection(dn, server)
-        conn.add_s(dn, attrs)
+        encod_attrs = []
+        for attr in attrs:
+            encod_attrs.append((attr[0], [elem.encode() for elem in attr[1]]))
+        conn.add_s(dn, encod_attrs)
 
     def _fixup_modify_operation(self, op):
         """Fixup an ldap modify operation."""
@@ -481,7 +484,7 @@ class Client(object):
             for val in values:
                 if not isinstance(val, str):
                     raise TypeError('List item must be 3-tuple of (str, str, [str]).')
-            result.append((op,type,values))
+            result.append((op,type, [value.encode() for value in values]))
         return result
 
     def modify(self, dn, mods, server=None):
