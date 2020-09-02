@@ -312,7 +312,7 @@ class Client(object):
     def _process_range_subtypes(self, result):
         """Incremental retrieval of multi-valued attributes."""
         for dn,attrs in result:
-            for key in attrs.keys():  # dict will be updated
+            for key in list(attrs):  # dict will be updated
                 if self.re_range.match(key):
                     self._retrieve_all_ranges(dn, key, attrs)
         return result
